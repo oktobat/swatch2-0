@@ -24,14 +24,21 @@ var sDist0 = $('#sect1').offset().top
 var sDist1 = $('#sect2').offset().top
 var sDist2 = $('#sect3').offset().top
 
-// 마지막구간이 윈도우높이보다 클때
-var lastSect = $('#sect4').offset().top             
-// 마지막구간이 윈도우높이보다 작을때
-// var lastSect = $('body').height() - $(window).height()
+// 마지막구간이 윈도우높이랑 같을때(불이안켜지는에러발생)
+// var lastSect = $('#sect4').offset().top             
+// 마지막구간이 윈도우높이보다 작거나 클때
+var lastSect = $('body').height() - $(window).height()
 var sct=0;
 $(window).on('scroll', function(){
     // var wh = $(this).height()
     sct = $(this).scrollTop()
+    if (sct>=100) {
+        $('.gotop').addClass('on')
+    } else if (sct<100) {   
+        $('.gotop').removeClass('on')
+    }
+
+
     if ( sct>=sDist0 && sct<sDist1 && !cflag) {
         $('#menu li').eq(0).addClass('on')
         $('#menu li').eq(0).siblings().removeClass('on')
@@ -65,13 +72,26 @@ $('section').on('mousewheel', function(event, delta){
 
 // 햄버거 클릭시 메뉴박스 오픈하기
 $('.open').on('click', function(){
-    
-    if ( $(this).hasClass('on') ) {
-        $(this).removeClass('on')
-        // $(this).find('i').removeClass('fa-times').addClass('fa-bars')
-    } else {
+    if ( !$(this).hasClass('on') ) {
         $(this).addClass('on')
-        // $(this).find('i').removeClass('fa-bars').addClass('fa-times')
+    } else {
+        $(this).removeClass('on')
     }
+})
 
+$('.openlist li a').on('click', function(e){
+    e.preventDefault()
+    $('.open').removeClass('on')
+    let num = $(this).parent().index()
+    let opensct = $('section').eq(num).offset().top
+    $('html, body').animate({
+        scrollTop:opensct
+    }, 800)
+})
+
+$('.gotop a').on('click', function(e){
+    e.preventDefault()
+    $('html, body').animate({
+        scrollTop:0
+    }, 600)
 })
